@@ -1,6 +1,6 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## 2.0.2 - 2022-07-17
+## 2.0.3 - 2022-07-17
 ### Fixed
 - Fixed timezone aware (#27)
 
