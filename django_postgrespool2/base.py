@@ -1,3 +1,4 @@
+import datetime
 import logging
 from functools import partial
 from importlib import import_module
@@ -17,7 +18,19 @@ except ImportError:
     def async_unsafe(func):
         return func
 try:
+    # django 2.2
     from django.db.backends.postgresql.utils import utc_tzinfo_factory
+    from django.utils.timezone import utc
+
+    def utc_tzinfo_factory(offset):
+        zero = 0
+        # psycopg>=2.9 sends offset as timedelta
+        if isinstance(offset, datetime.timedelta):
+            zero = datetime.timedelta()
+        if offset != zero:
+            raise AssertionError("database connection isn't set to UTC")
+        return utc
+
 except ImportError:
     utc_tzinfo_factory = None
 from sqlalchemy import event
@@ -37,7 +50,7 @@ pool_cls = getattr(import_module(pool_module_name), pool_cls_name)
 pool_args['poolclass'] = pool_cls
 
 db_pool = manage(Database, **pool_args)
-pool_disposed = Signal(providing_args=["connection"])
+pool_disposed = Signal()
 
 log = logging.getLogger('z.pool')
 
@@ -98,12 +111,13 @@ class DatabaseWrapper(Psycopg2DatabaseWrapper):
                 name, scrollable=False, withhold=self.connection.autocommit)
         else:
             cursor = self._pool_connection.cursor()
-        cursor.tzinfo_factory = utc_tzinfo_factory if settings.USE_TZ else None
+        cursor.tzinfo_factory = self.tzinfo_factory if settings.USE_TZ else None
         return cursor
 
     def tzinfo_factory(self, offset):
-        if utc_tzinfo_factory is not None:
-            return utc_tzinfo_factory
+        if utc_tzinfo_factory:
+            # for Django 2.2
+            return utc_tzinfo_factory(offset)
         return self.timezone
 
     def dispose(self):
