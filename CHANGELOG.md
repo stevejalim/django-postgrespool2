@@ -1,5 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## 2.0.2 - 2022-07-17
+### Fixed
+- Fixed timezone aware (#27)
+
 ## 2.0.1 - 2021-02-28
 ### Added
 - Support django 2.2, 3.0 and 3.1
