@@ -15,3 +15,8 @@ class TestPool(TestCase):
         self.assertEqual(dog.created.tzname(), "UTC")
         dog = DogModel.objects.get(name="wow")
         self.assertEqual(dog.created.tzname(), "UTC")
+
+    def test_with_json(self):
+        DogModel.objects.create(name="wow", attrs={"color": "pink"})
+        dog = DogModel.objects.get(name="wow")
+        self.assertEqual(dog.attrs, {"color": "pink"})

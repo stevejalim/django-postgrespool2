@@ -11,6 +11,7 @@ from django.db.backends.postgresql.base import (
 )
 from django.db.backends.postgresql.creation import DatabaseCreation as Psycopg2DatabaseCreation
 from django.dispatch import Signal
+from django.utils import version
 try:
     from django.utils.asyncio import async_unsafe
 except ImportError:
@@ -54,6 +55,7 @@ pool_disposed = Signal()
 
 log = logging.getLogger('z.pool')
 
+django_version = version.get_version_tuple(version.get_version())
 
 def _log(message, *args):
     log.debug(message)
@@ -152,6 +154,8 @@ class DatabaseWrapper(Psycopg2DatabaseWrapper):
             if self.isolation_level != c.isolation_level:
                 c.set_session(isolation_level=self.isolation_level)
 
+        if django_version >= (3, 1, 1):
+            psycopg2.extras.register_default_jsonb(conn_or_curs=c, loads=lambda x: x)
         return c
 
     def is_usable(self):
