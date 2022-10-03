@@ -1,8 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## 2.0.4 - 2022-07-17
+## 2.0.5 - 2022-10-03
 ### Fixed
-- Fixed timezone aware (#27)
+- Disable psycopg2 parsing JSONField value in Django 3.1+ ([#29](https://github.com/lcd1232/django-postgrespool2/pull/29)) 
+
+## 2.0.3 - 2022-07-17
+### Fixed
+- Fixed timezone aware ([#27](https://github.com/lcd1232/django-postgrespool2/pull/27))
 
 ## 2.0.1 - 2021-02-28
 ### Added
