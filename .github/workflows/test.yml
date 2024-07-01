@@ -10,7 +10,7 @@ jobs:
       # Label used to access the service container
       postgres:
         # Docker Hub image
-        image: postgres:12
+        image: postgres:15
         # Provide the password for postgres
         env:
           POSTGRES_USER: pool
@@ -42,9 +42,9 @@ jobs:
           - python-version: "3.9"
             django-version: "5.0"
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
